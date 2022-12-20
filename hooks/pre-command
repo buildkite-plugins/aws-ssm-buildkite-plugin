@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+limit=10
+keys=()
+names=()
+
+# Extract the environment variable keys and SSM parameter names.
+for param in ${!BUILDKITE_PLUGIN_AWS_SSM_PARAMETERS_*}; do
+  key="${param/BUILDKITE_PLUGIN_AWS_SSM_PARAMETERS_/}"
+  name="${!param}"
+
+  keys+=("${key}")
+  names+=("${name}")
+done
+
+# Fetch the parameters from SSM in groups of 10
+for ((i = 0; i < ${#names[@]}; i += limit)); do
+  page=("${names[@]:i:limit}")
+
+  # Split the results as tab-delimited values
+  # shellcheck disable=SC2048,SC2086
+  while IFS=$'\t' read -r name value
+  do
+    # Loop through the list of SSM parameter names until we find a match to correlate with the environment variable.
+    # While this is O(n*n), it should still be faster than making an API call for each parameter.
+    # We can't guarantee we're using Bash 4 so we can't use dictionaries.
+    for j in "${!names[@]}"; do
+      if [ "${names[$j]}" = "${name}" ]; then
+        key="${keys[$j]}"
+        export "${key}=${value}"
+        echo "Exported ${key} as value of parameter ${name}"
+      fi
+    done
+  done < <(aws ssm get-parameters \
+    --with-decryption \
+    --query "Parameters[].[Name,Value]" \
+    --output text \
+    --names ${page[*]})
+done

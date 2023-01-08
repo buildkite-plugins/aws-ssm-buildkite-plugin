@@ -1,11 +1,11 @@
 version: "3.8"
 services:
   tests:
-    image: buildkite/plugin-tester
+    image: buildkite/plugin-tester:v3.0.1
     volumes:
       - ".:/plugin:ro"
   lint:
-    image: buildkite/plugin-linter
+    image: buildkite/plugin-linter:latest
     command: ["--id", "aws-ssm"]
     volumes:
       - ".:/plugin:ro"

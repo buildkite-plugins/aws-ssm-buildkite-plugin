@@ -14,10 +14,8 @@ load '/usr/local/lib/bats/load.bash'
 
     run "$PWD/hooks/pre-command"
 
-    assert_output --partial <<EOM
-Exported PARAMETER_TWO as value of parameter /my/parameter/two
-Exported PARAMETER_ONE as value of parameter /my/parameter/one
-EOM
+    assert_output --partial "Exported PARAMETER_TWO as value of parameter /my/parameter/two"
+    assert_output --partial "Exported PARAMETER_ONE as value of parameter /my/parameter/one"
 
     assert_success
 

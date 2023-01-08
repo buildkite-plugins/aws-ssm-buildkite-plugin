@@ -17,10 +17,16 @@ done
 
 # Fetch the parameters from SSM in groups of 10
 for ((i = 0; i < ${#names[@]}; i += limit)); do
-  page=("${names[@]:i:limit}")
+  aws_command=(
+    aws ssm get-parameters
+    --with-decryption
+    --query "Parameters[].[Name,Value]"
+    --output text
+    --names
+  )
+  aws_command+=("${names[@]:i:limit}")
 
   # Split the results as tab-delimited values
-  # shellcheck disable=SC2048,SC2086
   while IFS=$'\t' read -r name value
   do
     # Loop through the list of SSM parameter names until we find a match to correlate with the environment variable.
@@ -33,9 +39,5 @@ for ((i = 0; i < ${#names[@]}; i += limit)); do
         echo "Exported ${key} as value of parameter ${name}"
       fi
     done
-  done < <(aws ssm get-parameters \
-    --with-decryption \
-    --query "Parameters[].[Name,Value]" \
-    --output text \
-    --names ${page[*]})
+  done < <("${aws_command[@]}")
 done

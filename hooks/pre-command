@@ -15,8 +15,11 @@ for param in ${!BUILDKITE_PLUGIN_AWS_SSM_PARAMETERS_*}; do
   names+=("${name}")
 done
 
-# Fetch the parameters from SSM in groups of 10
+# Fetch the parameters from SSM in batches of $limit.
 for ((i = 0; i < ${#names[@]}; i += limit)); do
+  keys_page=("${keys[@]:i:limit}")
+  names_page=("${names[@]:i:limit}")
+
   aws_command=(
     aws ssm get-parameters
     --with-decryption
@@ -24,17 +27,16 @@ for ((i = 0; i < ${#names[@]}; i += limit)); do
     --output text
     --names
   )
-  aws_command+=("${names[@]:i:limit}")
+  aws_command+=("${names_page[@]}")
 
-  # Split the results as tab-delimited values
-  while IFS=$'\t' read -r name value
-  do
+  # Split the results as tab-delimited values.
+  while IFS=$'\t' read -r name value; do
     # Loop through the list of SSM parameter names until we find a match to correlate with the environment variable.
-    # While this is O(n*n), it should still be faster than making an API call for each parameter.
+    # While this is O(limit^2), it should still be faster than making an API call for each parameter.
     # We can't guarantee we're using Bash 4 so we can't use dictionaries.
-    for j in "${!names[@]}"; do
-      if [ "${names[$j]}" = "${name}" ]; then
-        key="${keys[$j]}"
+    for j in "${!names_page[@]}"; do
+      if [[ "${names_page[$j]}" = "${name}" ]]; then
+        key="${keys_page[$j]}"
         export "${key}=${value}"
         echo "Exported ${key} as value of parameter ${name}"
       fi

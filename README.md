@@ -4,7 +4,7 @@
 
 Based on previous work by [zacharymctague](https://github.com/zacharymctague/aws-ssm-buildkite-plugin), [Linktree](https://github.com/blstrco/aws-sm-buildkite-plugin), and [Seek](https://github.com/seek-oss/aws-sm-buildkite-plugin).
 
-The plugin requires the `ssm:GetParameters` IAM permission for the parameters you specify.
+The plugin requires the `ssm:GetParameters` IAM permission for the parameters you specify. If the values are SecureStrings, it will also require `kms:Decrypt` on the corresponding KMS key.
 
 ## Example
 

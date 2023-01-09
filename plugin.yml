@@ -1,0 +1,14 @@
+name: aws-ssm
+description: Injects AWS SSM Parameter Store parameters as environment variables into your build step
+author: https://github.com/buildkite-plugins
+public: true
+requirements:
+  - aws
+  - bash
+configuration:
+  properties:
+    parameters:
+      type: object
+  required:
+    - parameters
+  additionalProperties: false

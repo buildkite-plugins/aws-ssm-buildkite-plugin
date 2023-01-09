@@ -7,7 +7,7 @@ steps:
   - label: ":sparkles: Lint"
     plugins:
       plugin-linter#v3.0.0:
-        id: ecr
+        id: aws-ssm
 
   - label: ":shell: Shellcheck"
     plugins:

@@ -10,6 +10,6 @@ steps:
           id: aws-ssm
 
   - label: ":shell: Shellcheck"
-    - plugins:
-        shellcheck#v1.3.0:
+    plugins:
+      - shellcheck#v1.3.0:
           files: hooks/**

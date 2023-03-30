@@ -1,8 +1,7 @@
 steps:
   - label: ":shell: Tests"
     plugins:
-      - plugin-tester#v1.0.0:
-          run: tests
+      - plugin-tester#v1.0.0: ~
 
   - label: ":sparkles: Lint"
     plugins:

@@ -29,10 +29,16 @@ steps:
 
 ## Developing
 
-To run the tests:
+To run testing, shellchecks and plugin linting use use `bk run` with the [Buildkite CLI](https://github.com/buildkite/cli).
 
-```shell
-docker-compose run --rm tests
+```bash
+bk run
+```
+
+Or if you want to run just the tests, you can use the docker [Plugin Tester](https://github.com/buildkite-plugins/buildkite-plugin-tester):
+
+```bash
+docker run --rm -ti -v "${PWD}":/plugin buildkite/plugin-tester:latest
 ```
 
 ## Contributing

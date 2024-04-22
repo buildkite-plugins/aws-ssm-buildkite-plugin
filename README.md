@@ -27,6 +27,32 @@ steps:
 - Specify a dictionary of `key: value` pairs to inject as environment variables, where the key is the name of the
   environment variable to be set, and the value is the AWS SSM parameter path.
 
+## Limitations
+
+Parameter Store can hold multi-line values, but only the first line will be
+stored in the target ENV variable. If multi-line values are required, the
+recommended approach is to store the value base64 encoded and decode it in your
+scripts:
+
+```yml
+steps:
+  - command: ./decode-param"
+    plugins:
+      - aws-ssm#v1.0.0:
+          parameters:
+            PARAMETER_BASE64: /my/parameter
+```
+
+To decode:
+
+```bash
+$ cat ./decode-param
+#!/bin/sh
+
+PARAMETER="$(echo $PARAMETER_BASE64 | base64 -d)"
+echo "Param equals: ${PARAMETER}"
+```
+
 ## Developing
 
 To run testing, shellchecks and plugin linting use use `bk run` with the [Buildkite CLI](https://github.com/buildkite/cli).

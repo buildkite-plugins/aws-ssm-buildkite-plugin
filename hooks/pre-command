@@ -29,6 +29,11 @@ for ((i = 0; i < ${#names[@]}; i += limit)); do
   )
   aws_command+=("${names_page[@]}")
 
+  if ! aws_output=$("${aws_command[@]}" 2>&1); then
+    echo "AWS command failed: $aws_output" >&2
+    exit 1
+  fi
+
   # Split the results as tab-delimited values.
   while IFS=$'\t' read -r name value; do
     # Loop through the list of SSM parameter names until we find a match to correlate with the environment variable.
@@ -41,5 +46,5 @@ for ((i = 0; i < ${#names[@]}; i += limit)); do
         echo "Exported ${key} as value of parameter ${name}"
       fi
     done
-  done < <("${aws_command[@]}")
+  done <<< "$aws_output"
 done

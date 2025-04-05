@@ -1,4 +1,4 @@
-# AWS SSM Buildkite Plugin
+# AWS SSM Buildkite Plugin [![Build status](https://badge.buildkite.com/981686fe9b2a1f79407923a1f1412281967b800d433cb82a1c.svg?branch=main)](https://buildkite.com/buildkite/plugins-aws-ssm)
 
 🔑 Injects AWS SSM Parameter Store parameters as environment variables into your build step.
 

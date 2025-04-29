@@ -14,7 +14,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - command: echo "Param One equals \$PARAMETER_ONE"
     plugins:
-      - aws-ssm#v1.0.0:
+      - aws-ssm#v1.1.0:
           parameters:
             PARAMETER_ONE: /my/parameter
             PARAMETER_TWO: /my/other/parameter
@@ -38,7 +38,7 @@ scripts:
 steps:
   - command: ./decode-param"
     plugins:
-      - aws-ssm#v1.0.0:
+      - aws-ssm#v1.1.0:
           parameters:
             PARAMETER_BASE64: /my/parameter
 ```
